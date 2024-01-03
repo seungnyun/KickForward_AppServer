@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jang.biz.mapper.KickBoardMapper">
+
+	<select id="getKickBoardList" parameterType="string" resultType="KickBoard">
+		Select *
+		from kickboard
+		WHERE in_use = 'n'
+	</select>
+
+	<update id="rentKickBoard" parameterType="String">
+    	UPDATE kickboard
+    	SET in_use = 'y'
+    	WHERE serialnumber = #{serialnumber}
+	</update>
+
+	<insert id="insertRentKickBoard">
+    	<selectKey keyProperty="usageRecordId" resultType="int" order="BEFORE">
+        	SELECT usagerecordid.nextval FROM dual
+    	</selectKey>
+    	INSERT INTO kickboardrecord (
+        	usagerecordid,
+        	userid,
+        	kickboardid,
+        	rentaldatetime,
+        	rentallatitude,
+        	rentallongitude,
+        	rentalstatus
+    	)
+    	VALUES (
+        	#{usageRecordId},
+        	#{userId},
+        	#{kickboardId},
+        	#{rentalDatetime},
+        	#{rentalLatitude},
+        	#{rentalLongitude},
+        	#{rentalStatus}
+    	)
+	</insert>
+
+	<update id="endRentKickBoard" parameterType="String">
+    	UPDATE kickboard
+    	SET in_use = 'n'
+    	WHERE serialnumber = #{serialnumber}
+	</update>
+
+	<update id="insertRentLog" parameterType="Rent">
+   		UPDATE kickboardrecord
+   		set returnDatetime = #{returnDatetime}, returnLatitude = #{returnLatitude}, returnLongitude = #{returnLongitude}, rentalfee = #{rentalFee}, rentalStatus = #{rentalStatus}
+   		where usageRecordId = #{usageRecordId}
+	</update>
+
+
+	<select id="getRentLog" parameterType="string" resultType="Rent">
+		Select *
+		from kickboardrecord
+		WHERE userid = #{userid}
+	</select>
+
+
+	<update id="updateUserStateY" parameterType="int">
+		UPDATE member_tbl
+		SET in_use = 'y'
+		WHERE no = #{no}
+	</update>
+
+	<update id="updateUserStateN" parameterType="int">
+		UPDATE member_tbl
+		SET in_use = 'n'
+		WHERE no = #{no}
+	</update>
+
+	<select id="getUserInuseState" parameterType="string" resultType="User">
+		Select *
+		from member_tbl
+		WHERE id = #{id} and in_use = 'y'
+	</select>
+
+	
+
+	<select id="getInuseData" parameterType="int"
+		resultType="Rent">
+		Select *
+		from kickboardrecord
+		WHERE userId = #{id} and rentalStatus='사용중'
+	</select>
+
+	
+</mapper>

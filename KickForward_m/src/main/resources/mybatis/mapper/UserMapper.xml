@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jang.biz.mapper.UserMapper">
+
+	<select id="getUser" parameterType="string" resultType="User">
+		Select *
+		from member_tbl
+		WHERE id = #{id}
+	</select>
+
+	<insert id="insertUser" keyProperty="no">
+		<selectKey keyProperty="no" resultType="int" order="BEFORE">
+			SELECT
+			SEQ_NO.NEXTVAL AS no FROM DUAL
+		</selectKey>
+		INSERT INTO member_tbl (
+		no,
+		id,
+		pass,
+		name,
+		phone,
+		email,
+		in_use
+		)
+		VALUES (
+		#{no},
+		#{id},
+		#{pass},
+		#{name},
+		#{phone},
+		#{email},
+		'n'
+		)
+	</insert>
+
+	<update id="insertLicense" parameterType="string">
+		UPDATE member_tbl SET
+		license = 1
+		WHERE id = #{id}
+	</update>
+
+	<select id="findIdForCertification" parameterType="string"
+		resultType="string">
+		SELECT id
+		FROM member_tbl
+		WHERE name = #{name}
+	</select>
+	
+</mapper>

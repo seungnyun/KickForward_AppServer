@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jang.biz.mapper.BoardMapper">
+
+    <insert id="addBoard" keyProperty="bno">
+        <selectKey keyProperty="bno" resultType="int" order="BEFORE">
+            SELECT COALESCE(MAX(bno), 0) + 1 AS bno
+            FROM BBS
+        </selectKey>
+        INSERT INTO BBS (
+        bno
+        , title
+        , content
+        , reg_Date
+        , writerId
+        , viewcnt
+        , replycnt
+        , recommendcnt
+        , del_yn
+        , location
+        , kbnumber
+        , file_name
+        ) VALUES (
+        #{bno},
+        #{title},
+        #{content},
+        sysdate,
+        #{writerId},
+        #{viewcnt},
+        #{replycnt},
+        #{recommendcnt},
+        #{del_yn},
+        #{location},
+        #{kbnumber},
+        #{fileName}
+        )
+    </insert>
+
+</mapper>
